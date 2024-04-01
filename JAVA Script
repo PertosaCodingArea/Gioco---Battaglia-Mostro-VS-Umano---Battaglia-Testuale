@@ -1,0 +1,154 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+
+class Player {
+    private String name;
+    private int health;
+    private List<String> inventory;
+
+    public Player(String name) {
+        this.name = name;
+        this.health = 100;
+        this.inventory = new ArrayList<>();
+    }
+
+    public void takeDamage(int damage) {
+        this.health -= damage;
+    }
+
+    public void heal(int amount) {
+        this.health += amount;
+    }
+
+    public void addToInventory(String item) {
+        this.inventory.add(item);
+    }
+
+    public void displayInventory() {
+        System.out.println("Inventory:");
+        for (String item : inventory) {
+            System.out.println("- " + item);
+        }
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+class Enemy {
+    private String name;
+    private int health;
+    private int damage;
+
+    public Enemy(String name, int health, int damage) {
+        this.name = name;
+        this.health = health;
+        this.damage = damage;
+    }
+
+    public void takeDamage(int damage) {
+        this.health -= damage;
+    }
+
+    public boolean isAlive() {
+        return health > 0;
+    }
+
+    public void attack(Player player) {
+        player.takeDamage(damage);
+        System.out.println(name + " attacks! You take " + damage + " damage.");
+    }
+}
+
+public class Game {
+    private Player player;
+    private Enemy enemy;
+
+    public Game() {
+        this.player = null;
+        this.enemy = null;
+    }
+
+    public void start() {
+        System.out.println("Welcome to the Adventure Game!");
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter your name: ");
+        String name = scanner.nextLine();
+        this.player = new Player(name);
+        System.out.println("Hello, " + this.player.getName() + "! Get ready for an adventure.");
+
+        generateEnemy();
+        battle();
+        scanner.close();
+    }
+
+    private void generateEnemy() {
+        Random random = new Random();
+        String[] enemyNames = {"Goblin", "Orc", "Dragon"};
+        String name = enemyNames[random.nextInt(enemyNames.length)];
+        int health = random.nextInt(100) + 1; // Health between 1 and 100
+        int damage = random.nextInt(20) + 1; // Damage between 1 and 20
+        this.enemy = new Enemy(name, health, damage);
+        System.out.println("Look out! You've encountered a " + this.enemy.getName() + "!");
+    }
+
+    private void battle() {
+        Scanner scanner = new Scanner(System.in);
+        while (player.getHealth() > 0 && enemy.isAlive()) {
+            System.out.print("Do you want to attack (a) or heal (h)? ");
+            String action = scanner.nextLine();
+            if (action.equals("a")) {
+                playerAttack();
+            } else if (action.equals("h")) {
+                playerHeal();
+            } else {
+                System.out.println("Invalid choice. Try again.");
+            }
+
+            if (enemy.isAlive()) {
+                enemyAttack();
+            }
+        }
+        if (player.getHealth() <= 0) {
+            System.out.println("Game over! You have been defeated.");
+        } else {
+            System.out.println("Congratulations! You defeated the enemy.");
+        }
+        scanner.close();
+    }
+
+    private void playerAttack() {
+        Random random = new Random();
+        int damage = random.nextInt(16) + 5; // Damage between 5 and 20
+        enemy.takeDamage(damage);
+        System.out.println("You attack the " + enemy.getName() + "! You deal " + damage + " damage.");
+    }
+
+    private void playerHeal() {
+        Random random = new Random();
+        int healAmount = random.nextInt(21) + 10; // Heal between 10 and 30
+        player.heal(healAmount);
+        System.out.println("You heal yourself for " + healAmount + " health.");
+    }
+
+    private void enemyAttack() {
+        enemy.attack(player);
+        try {
+            Thread.sleep(1000); // Pause for dramatic effect
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        Game game = new Game();
+        game.start();
+    }
+}
