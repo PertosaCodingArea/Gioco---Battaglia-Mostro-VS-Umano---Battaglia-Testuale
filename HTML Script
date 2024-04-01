@@ -1,0 +1,69 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventure Game</title>
+    <script>
+        function startGame() {
+            var playerName = prompt("Enter your name:");
+            alert("Hello, " + playerName + "! Get ready for an adventure.");
+            generateEnemy();
+        }
+
+        function generateEnemy() {
+            var enemyNames = ["Goblin", "Orc", "Dragon"];
+            var enemyIndex = Math.floor(Math.random() * enemyNames.length);
+            var enemyName = enemyNames[enemyIndex];
+            var enemyHealth = Math.floor(Math.random() * 100) + 1; // Health between 1 and 100
+            var enemyDamage = Math.floor(Math.random() * 20) + 1; // Damage between 1 and 20
+            alert("Look out! You've encountered a " + enemyName + "!");
+            battle();
+        }
+
+        function battle() {
+            var playerHealth = 100;
+            var enemyHealth = 100;
+            while (playerHealth > 0 && enemyHealth > 0) {
+                var action = prompt("Do you want to attack (a) or heal (h)?");
+                if (action === "a") {
+                    playerAttack();
+                } else if (action === "h") {
+                    playerHeal();
+                } else {
+                    alert("Invalid choice. Try again.");
+                }
+                if (enemyHealth > 0) {
+                    enemyAttack();
+                }
+            }
+            if (playerHealth <= 0) {
+                alert("Game over! You have been defeated.");
+            } else {
+                alert("Congratulations! You defeated the enemy.");
+            }
+        }
+
+        function playerAttack() {
+            var damage = Math.floor(Math.random() * 16) + 5; // Damage between 5 and 20
+            enemyHealth -= damage;
+            alert("You attack the enemy! You deal " + damage + " damage.");
+        }
+
+        function playerHeal() {
+            var healAmount = Math.floor(Math.random() * 21) + 10; // Heal between 10 and 30
+            playerHealth += healAmount;
+            alert("You heal yourself for " + healAmount + " health.");
+        }
+
+        function enemyAttack() {
+            var damage = Math.floor(Math.random() * 20) + 1; // Damage between 1 and 20
+            playerHealth -= damage;
+            alert("The enemy attacks! You take " + damage + " damage.");
+        }
+    </script>
+</head>
+<body>
+    <h1>Adventure Game</h1>
+    <button onclick="startGame()">Start Game</button>
+</body>
+</html>
